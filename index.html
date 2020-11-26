@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="app.css">
+  <title>Subscribe</title>
+</head>
+<body>
+  
+  <div class="container">
+    <div id="aaa" class="channel">
+      <div class="name">AAA</div>
+      <div class="subscribers">0</div>
+      <button onclick="subscribe('aaa')">
+        Subscribe
+      </button>
+    </div>
+    <div id="w3certified" class="channel">
+      <div class="name">W3Certified</div>
+      <div class="subscribers">0</div>
+      <button onclick="subscribe('w3certified')">
+        Subscribe
+      </button>
+    </div>
+    <div id="bbb" class="channel">
+      <div class="name">BBB</div>
+      <div class="subscribers">0</div>
+      <button onclick="subscribe('bbb')">
+        Subscribe
+      </button>
+    </div>        
+  </div>
+
+  <script>
+    async function subscribe(companyId){
+      var connection = await fetch(`subscribe/${companyId}`)
+      var response = await connection.json()
+      console.log(response)
+    }
+
+    var eventSource = new EventSource("/sse")
+    eventSource.addEventListener("message", function(e){
+      try{
+        console.log(e.data)
+        var companies = JSON.parse(e.data)
+        for(companyId in companies){
+          console.log(`#${companyId}`)
+          document.querySelector(`#${companyId} .subscribers`).innerHTML = companies[companyId].subscribers
+        }
+      }catch{
+
+      }
+    })
+
+  </script>
+
+</body>
+</html>
